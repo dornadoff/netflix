@@ -7,6 +7,7 @@ from .serializers import *
 from .models import *
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
+from rest_framework import filters
 
 
 class HelloAPIView(APIView):
@@ -25,25 +26,25 @@ class HelloAPIView(APIView):
         }
         return Response(content)
 
-class AktyorAPIView(APIView):
-    def get(self, request):
-        akyor = Aktyor.objects.all()
-        serializer = AktyorSeializer(akyor, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        aktyor = request.data
-        serializer = AktyorSeializer(data=aktyor)
-        if serializer.is_valid():
-            Aktyor.objects.create(
-                ism=serializer.validated_data.get("ism"),
-                tugilgan_yili = serializer.validated_data.get("tugilgan_yili"),
-                jins = serializer.validated_data.get("jins"),
-                davlat = serializer.validated_data.get("davlat")
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class AktyorAPIView(APIView):
+#     def get(self, request):
+#         akyor = Aktyor.objects.all()
+#         serializer = AktyorSeializer(akyor, many=True)
+#         return Response(serializer.data)
+#
+#     def post(self, request):
+#         aktyor = request.data
+#         serializer = AktyorSeializer(data=aktyor)
+#         if serializer.is_valid():
+#             Aktyor.objects.create(
+#                 ism=serializer.validated_data.get("ism"),
+#                 tugilgan_yili = serializer.validated_data.get("tugilgan_yili"),
+#                 jins = serializer.validated_data.get("jins"),
+#                 davlat = serializer.validated_data.get("davlat")
+#             )
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AktyorDetailView(APIView):
     def get(self, request, pk):
@@ -136,6 +137,17 @@ class TarifDetailView(APIView):
 class KinoViewSet(ModelViewSet):
     queryset = Kino.objects.all()
     serializer_class = KinoSerializer
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter, ]
+    search_fields = ("nom", )
+    ordering_fields = ("yil", )
+
+    # def get_queryset(self):
+    #     soz = self.request.query_params.get("qidirish")
+    #     if soz is None or soz == "":
+    #         natija = Kino.objects.all()
+    #     else:
+    #         natija = Kino.objects.filter(nom__contains=soz)
+    #     return natija
 
     @action(detail=True)
     def aktyorlar(self, request, pk):
@@ -162,4 +174,17 @@ class IzohViewSet(ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class AktyorViewSet(ModelViewSet):
+    queryset = Aktyor.objects.all()
+    serializer_class = AktyorSeializer
+    filter_backends = [filters.OrderingFilter, ]
+    search_fields = ("nom", "albom__nom", )
+    ordering_fields = ("tugilgan_yili", )
 
+    def get_queryset(self):
+        soz = self.request.query_params.get("qidirish")
+        if soz is None or soz == "":
+            natija = Aktyor.objects.all()
+        else:
+            natija = Aktyor.objects.filter(ism__contains=soz)
+        return natija
