@@ -39,3 +39,4 @@ class IzohSerializer(serializers.ModelSerializer):
     class Meta:
         model = Izoh
         fields = "__all__"
+

@@ -141,14 +141,6 @@ class KinoViewSet(ModelViewSet):
     search_fields = ("nom", )
     ordering_fields = ("yil", )
 
-    # def get_queryset(self):
-    #     soz = self.request.query_params.get("qidirish")
-    #     if soz is None or soz == "":
-    #         natija = Kino.objects.all()
-    #     else:
-    #         natija = Kino.objects.filter(nom__contains=soz)
-    #     return natija
-
     @action(detail=True)
     def aktyorlar(self, request, pk):
         actors =  Kino.objects.get(id=pk).aktyorlar.all()
@@ -177,14 +169,6 @@ class IzohViewSet(ModelViewSet):
 class AktyorViewSet(ModelViewSet):
     queryset = Aktyor.objects.all()
     serializer_class = AktyorSeializer
-    filter_backends = [filters.OrderingFilter, ]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     search_fields = ("nom", "albom__nom", )
     ordering_fields = ("tugilgan_yili", )
-
-    def get_queryset(self):
-        soz = self.request.query_params.get("qidirish")
-        if soz is None or soz == "":
-            natija = Aktyor.objects.all()
-        else:
-            natija = Aktyor.objects.filter(ism__contains=soz)
-        return natija
