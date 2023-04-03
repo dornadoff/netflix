@@ -7,14 +7,14 @@ from rest_framework.authtoken.views import obtain_auth_token
 router = DefaultRouter()
 router.register("kinolar", KinoViewSet)
 router.register("izoh", IzohViewSet)
-router.register("aktyor", AktyorViewSet)
+# router.register("aktyor", AktyorViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include(router.urls)),
     path("hello/", HelloAPIView.as_view()),
-    # path("aktyorlar/", AktyorAPIView.as_view()),
-    # path("aktyor/<int:pk>/", AktyorDetailView.as_view()),
+    path("aktyorlar/", AktyorAPIView.as_view()),
+    path("aktyor/<int:pk>/", AktyorDetailView.as_view()),
     path("tariflar/", TarifAPIView.as_view()),
     path("tariflar/ochirish/<int:pk>/", TarifOchirishAPIView.as_view()),
     path("tarif/<int:pk>/", TarifDetailView.as_view()),

@@ -18,6 +18,7 @@ class AktyorSeializer(serializers.Serializer):
             raise serializers.ValidationError("Bunday jins yoq")
         return qiymat
 
+
 class TarifSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     nom = serializers.CharField(max_length=100)

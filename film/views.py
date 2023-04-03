@@ -1,4 +1,3 @@
-from django.views import generic
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView, status
@@ -26,25 +25,25 @@ class HelloAPIView(APIView):
         }
         return Response(content)
 
-# class AktyorAPIView(APIView):
-#     def get(self, request):
-#         akyor = Aktyor.objects.all()
-#         serializer = AktyorSeializer(akyor, many=True)
-#         return Response(serializer.data)
-#
-#     def post(self, request):
-#         aktyor = request.data
-#         serializer = AktyorSeializer(data=aktyor)
-#         if serializer.is_valid():
-#             Aktyor.objects.create(
-#                 ism=serializer.validated_data.get("ism"),
-#                 tugilgan_yili = serializer.validated_data.get("tugilgan_yili"),
-#                 jins = serializer.validated_data.get("jins"),
-#                 davlat = serializer.validated_data.get("davlat")
-#             )
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class AktyorAPIView(APIView):
+    def get(self, request):
+        akyor = Aktyor.objects.all()
+        serializer = AktyorSeializer(akyor, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        aktyor = request.data
+        serializer = AktyorSeializer(data=aktyor)
+        if serializer.is_valid():
+            Aktyor.objects.create(
+                ism=serializer.validated_data.get("ism"),
+                tugilgan_yili = serializer.validated_data.get("tugilgan_yili"),
+                jins = serializer.validated_data.get("jins"),
+                davlat = serializer.validated_data.get("davlat")
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AktyorDetailView(APIView):
     def get(self, request, pk):
@@ -60,7 +59,7 @@ class AktyorDetailView(APIView):
             aktyor.ism = serializer.validated_data.get("ism")
             aktyor.davlat = serializer.validated_data.get("davlat")
             aktyor.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -166,9 +165,9 @@ class IzohViewSet(ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class AktyorViewSet(ModelViewSet):
-    queryset = Aktyor.objects.all()
-    serializer_class = AktyorSeializer
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
-    search_fields = ("nom", "albom__nom", )
-    ordering_fields = ("tugilgan_yili", )
+# class AktyorViewSet(ModelViewSet):
+#     queryset = Aktyor.objects.all()
+#     serializer_class = AktyorSeializer
+#     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+#     search_fields = ("nom", "albom__nom", )
+#     ordering_fields = ("tugilgan_yili", )
