@@ -82,18 +82,18 @@ class TarifAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class TarifOchirishAPIView(APIView):
-    def delete(self, request, pk):
+    def delete(self, request, pk:int):
         tarif = Tarif.objects.get(id=pk).delete()
         return Response({"xabar":"ochirildi"})
 
 class TarifDetailView(APIView):
-    def get(self, request, pk):
+    def get(self, request, pk:int):
         if len(Tarif.objects.filter(id=pk)) == 1:
             serializer = TarifSerializer(Tarif.objects.get(id=pk))
             return Response(serializer.data)
         return Response({"xabar":"Bunday id da aktyor yo'q"})
 
-    def put(self, request, pk):
+    def put(self, request, pk:int):
         tarif = Tarif.objects.get(id=pk)
         serializer = TarifSerializer(tarif, data=request.data)
         if serializer.is_valid():
